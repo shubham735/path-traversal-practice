@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-path-traversal-app
+    container_name: laravel-path-traversal-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel
+
+  web:
+    image: nginx:latest
+    container_name: laravel-path-traversal-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - .:/var/www
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
